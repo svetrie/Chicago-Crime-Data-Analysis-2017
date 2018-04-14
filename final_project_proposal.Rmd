@@ -1,8 +1,8 @@
 ---
 title: "Stat 385 Final Project Proposal"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -30,7 +30,6 @@ We plan to approach this problem by dividing the city into locations based on th
 ##Part2: Related Work
 
 Link to project:
-
 [related_project_page](https://rstudio-pubs-static.s3.amazonaws.com/294927_b602318d06b74e4cb2e6be336522e94e.html)
 
 
@@ -99,15 +98,57 @@ gganimate - Show An Animation Of A Ggplot2 Object
 shiny - A perfect way to explore data and share findings with non-programmers.
 
 
+##3.3 Visualisations or sample graphs: 
+###3.3.1 Box-and-whisker Plot: 
+![](images/boxplot.png)
+Display the distribution of ($date, $primary type,$location description, $year)
+
+###3.3.2 Lineplot:
+![](images/lineplot.png)
+Display the distribution of ($date of the crime vs $different types of crime) 
+
+###3.3.3 Matrix of scatterplots:
+![](images/scatterplots.png)
+Plots a matrix of scatterplots. Each variable gets plotted against another.
+Such as (date, primary type, location description, year)
+
+
+###3.2.4 Histogram:
+![](images/histogram.png)
+A histogram plots the frequency of observations. 
+(Such as date, primary type, location description, year.)
+
+
+###3.3.5 Interactive Interface: Heatmap:
+![](images/heatmap.png)
+Heatmap is a graphical map representation of where different kinds of crime happened based on areas of Chicago. We plan to get access to location via Google map API.
+It gives a  visualization where marks on a chart are represented as colors. 
+
+
+##3.4 Project Interface 
+
+![](images/map.png)
+
+Sample interface using shiny and google map api
+
+Work cited: https://stackoverflow.com/questions/31836417/interacting-with-ggmap-in-shiny-can-the-user-zoom-scroll-etc
+
+
+We plan to use Google map as the main interface of the project. We plan to project latitude and longitude into the Api and then Google map should generate a marker for each of the coordinates.
+And markers can be set in different color to distinguish different primary types of crimes on the map. In this way when users click on the link of a certain marker, it will show more details about a particular crime incident. 
+
+Also, we plan to implement some features using shiny that allow users to select from a  drop-down list, such as $Date, $Primary type, $Community Area. And the system will filter the info that users entered to highlight certain markers. We think with the use of Google Maps API and Shiny, the interface is a great visual representation of the crime incidents in chicago.
+Furthermore, we plan on including some our time series graphs on our web app generated through Shiny. Users will be able to scroll through the graphs and click on time periods to see how crime rates have fluctuated over time. 
 
 
 ###3.5 Future Use of Project 
 
-This information would be useful in directing the focus of the Chicago Police Department to the most problematic, crime-riddled areas, helping prevent crime before it occurs. Furthermore, we would like to analyze which types of crime (narcotics, assault, robbery, etc.) occur most frequently in each location since different types of crime could require different strategies by the police department. The dataset also provides us with the setting (residence, street, hotel, etc.) in which each crime occurred. We plan on scrutinizing this information to see if any correlations emerge between certain types of crimes and certain settings. This information might not be immediately useful to us but could prove valuable to forensics teams when they examine the setting of the crime. Finally, we also plan on tracking crime throughout the past couple years to gauge whether the crime situation is improving or worsening in certain locations and in the city of Chicago overall.
+The information obtained through this project could prove valuable in identifying patterns in criminal activities across Chicago. By analyzing Chicago in a smaller scope using latitude, longitude coordinates as well as specific streets, we could provide guidance to law enforcement about which parts of Chicago require the most attention. Furthermore, it would bring more attention to these troubled regions and this attention would hopefully manifest into new initiatives and programs to help those communities in need. Also, our heatmap could be used by both Chicago residents and visitors to avoid dangerous locations and use safer routes to navigate the Chicago region. Furthermore, our time series analysis graphs track how different types of crime have varied over the years. Law enforcement could use this information to adjust their approach to battling crime since different types of crime require different departments and different strategies to combat effectively. Lastly, we hope that our project will inspire others to search for answers to stopping Chicago’s crime issues. Perhaps our project could even be used as a model for others who wish to conduct research and analysis on this issue.  We feel that this is an important problem that deserves a solution and hope others feel the same after seeing our project.
 
 ##Part 4: Feasibility
 
-One of the challenges of the project was gathering a dataset that satisfied all of the requirements and captured our interest. Using the time series analysis and other types of visualizations, we are planning to create a project that illustrates how Chicago has been impacted by crime. Our project will use aspects from a previou project, but will implement our own unique ideas and vision. Specifically, our user interface will allow the user to interact with the details and info of criminal activity in Chicago. We feel the most difficult part of this project will be creating the user interface and using new concepts like shiny. We anticipate that this will take the most amount of time, but we are confident that the core idea behind our project can be completed by the end of the semester. After completing the project proposal, the group will spend the next two weeks working on the project demo video. We are planning to meet at least once or twice a week to ensure fluent communication across all members and combining our individual work to form a cohesive project.Thus, we have decided to meet after each class. Each member will have specific roles to complete. One member will focus on data visualizations and initial data analysis. This member will create graphs such as the box-and-whisker plot, line plot, and matrix plot. The other two members will primarily devote their time to developing the user interface using Shiny and the Google Maps API.They will be responsible for implementing features like the heatmap and for adding tools like scroll bars, sliders, and buttons to allow users to interactively explore our data.  Since Shiny is a new concept and the Google Maps API is something that hasn’t been covered in class, we anticipate this part of the project to be time consuming and potentially frustrating. Therefore, we believe that this is a fair distribution of work across group members that will ensure that our project gets completed by the deadline.
+One of the challenges of the project was gathering a dataset that satisfied all of the requirements and captured our interest. Using the time series analysis and other types of visualizations, we are planning to create a project that illustrates how Chicago has been impacted by crime. Our project will use aspects from a previous project, but will implement our own unique ideas and vision. Specifically, our user interface will allow the user to interact with the details and info of criminal activity in Chicago. We feel the most difficult part of this project will be creating the user interface and using new concepts like shiny. We anticipate that this will take the most amount of time, but we are confident that the core idea behind our project can be completed by the end of the semester. After completing the project proposal, the group will spend the next two weeks working on the project demo video. We are planning to meet at least once or twice a week to ensure fluent communication across all members and combining our individual work to form a cohesive project.Thus, we have decided to meet after each class. Each member will have specific roles to complete. One member, Vetrie, will focus on data visualizations and initial data analysis. Vetrie will create graphs such as the box-and-whisker plot, line plot, and matrix plot. The other two members, Tae and Jiayi, will primarily devote their time to developing the user interface using Shiny and the Google Maps API.They will be responsible for implementing features like the heatmap and for adding tools like scroll bars, sliders, and buttons to allow users to interactively explore our data.  Since Shiny is a new concept and the Google Maps API is something that hasn’t been covered in class, we anticipate this part of the project to be time consuming and potentially frustrating. Therefore, we believe that this is a fair distribution of work across group members that will ensure that our project gets completed by the deadline.
+
 
 ##Part 5: References
 ###5.1 list (5+) of papers or items read to write this proposal:
@@ -144,4 +185,55 @@ citation(package="maps")
 citation(package="ggmap")
 citation(package="shiny")
 ```
+
+##Part 6: Appendix
+###6.1  sketches of visualisations or the shiny application:
+
+###Already reported in 3.4 Project Interface
+
+###6.2 Functions Overview:
+
+- read.csv() takes in a .csv file as input and returns a data frame that contains the data of the .csv file. Since our dataset is contained in a .csv file, this method is essential to our project and will be the first method called
+
+- head() accepts a data structure as input and returns the first six elements. We will use the head() function on our data frame created above to gain some more insight into the structure of our data, especially the first couple observations, before we begin a more in-depth analysis 
+
+- tail() accepts a data structure as input and returns the last six elements. Similar to head(), we will use tail() to gain more insight about our data before we begin analyzing it 
+
+- summary() is a generic function that accepts an object as input and returns a statistical summary of the data the object contains. We will use summary() on our data frame to get a better sense of the distributions of different variables the data contains. Like head() and tail(), summary() will help us get a better understanding of our data before the analysis phase.
+
+- str_detect() accepts two parameters in the following order, a vector of strings or string object and a regex pattern to search for within each string input. Based on whether or not the pattern can be found in each string, - str_detect() will return a sequence of booleans. We plan on using str_detect() to find the number of occurrences a certain type of crime occurs. Since the different types of crime are represented as text, str_detect() will be a useful method in isolating specific types of crimes from our data set. We can then produce visualizations for these variables using ggplot’s functions.
+
+- str_extract() accepts the same two parameters that str_detect() does. If the regex pattern is found in a string, it will return the portion of the string that matches the regex pattern. We plan on using str_extract() to extract street names from our data set so we can identify which streets are the most dangerous. It can also be used to extract the year from the date variable. 
+
+- geom_bar() when used with ggplot() takes in a column of a data frame as input and produces  a bar graph based on the categorical variable. We plan on producing graphs for the text-based variables that were derived using str_detect and str_extract above using geom_bar()
+
+- geom_hist() is similar to geom_bar() but is used to graph the distributions of quantitative variables instead. We will use geom_hist() to produce visualizations for numeric variables in our data
+
+- geom_line() is another important ggplot function. It accepts an x variable and a y variable and produces a line graph based on these inputs. We plan on using geom_line() to produce our time series analysis graphs, using the date as our x variable and number of crime occurrences as our y variable. These variables will be obtained using str_extract() and dplyr, which is discussed below. Furthermore, we can use the facet wrap feature to produce similar line graphs for each individual district 
+
+- filter() is a dplyr function that takes in a tabular data structure and a logical condition and returns the rows of the tabular data structure for which the logical condition evaluates to true. We plan on using filter() to subset our data so we can obtain the frequencies of each type of crime. This will then be used in our time analysis graphs 
+
+- select() is another useful dplyr function that accepts a tabular data structure and a sequence of variable names. It will then return a similar data structure that only contains the variables specified. We felt that using select() is an easy way to access specific sets of variables within our data. For example, the variables latitude and longitude are highly related and should be grouped together when they are extracted to pinpoint precise locations for the heatmap.
+
+- sliderInput() is a Shiny UI input function that creates a slider for our user interface. It accepts parameters that allow us to set a label, set a default value the slider will be positioned at, and max and min values the slider cannot go beyond, in addition to numerous other optional parameters. We hope to incorporate this feature in our time series analysis graphs to allow users to scroll through different time periods.
+
+- actionButton() is a Shiny UI function that creates buttons users can click on to change the state of the user interface. It accepts parameters for the button’s label and the dimensions of the button in addition to more optional parameters. We plan on using this function to create buttons for the time series analysis graphs that allow users to switch between different time periods.
+
+- numericInput() is a Shiny UI function that allows users to enter in numeric data through the user interface. It accepts parameters for its label, default value, and max and min values the user can enter in, plus other optional parameters.  We will implement this feature such that users can enter in a year within a given range and the user interface will display the crime statistics for that particular year.
+
+- selectInput() is a Shiny UI function that allows users to select an option from a drop down menu that contains a list of possible choices. It accepts parameters for its label, list of choices, and default choice, in additional to other optional parameters. We will add this feature to our user interface to allow users to choose a specific type of crime they wish to analyze. The user interface would then display statistics and graphs for that particular type of crime.
+
+- renderPlot() is a Shiny rendering function that allows us to add graphs and plots to our Shiny app. This function takes in an expression parameter that is used to generate the graph as well as height and width parameters that are used to set the dimensions of the plot. This function is essential since it will be used to add our data visualizations, especially our time series analysis plots, to our Shiny app.
+
+
+
+
+
+
+
+
+###6.3 Sample Data of 10 observations: 
+
+
+![dataset](images/dataset.png)
 
