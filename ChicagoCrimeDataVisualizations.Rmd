@@ -25,8 +25,7 @@ str(crime_data)
 
 ```
 
-Graphs crime occurences for each of Chicago's 20 Districts
-
+Number of crime occurences for each of Chicago's 20 Districts
 ```{r}
 
 ggplot(data = crime_data, aes(x = crime_data$District)) + 
@@ -36,25 +35,20 @@ ggplot(data = crime_data, aes(x = crime_data$District)) +
 
 ```
 
-Graphs 20 most common locations that crimes occur in
-
+20 most common settings that crimes occur in
 ```{r}
-crime_spots = count(crime_data, Location.Description)
-crime_spots = arrange(crime_spots, desc(n))
-crime_spots = head(crime_spots, 20)
+common_crime_spots = count(crime_data, Location.Description)
+common_crime_spots = arrange(common_crime_spots, desc(n))
+common_crime_spots = head(common_crime_spots, 20)
+colnames(common_crime_spots) = c("Type of Location", "Number of Crime Occurences")
 
-crime_data_locations = subset(crime_data, crime_data$Location.Description %in% crime_spots$Location.Description)
-
-ggplot(data = crime_data_locations, aes(x = crime_data_locations$Location.Description)) +
-  geom_bar() + 
-  labs(title = "Most Common Locations Crimes Occur In", x = "Types of Locations", y = "Number of Crime Occurrences") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-
-
+ggplot(common_crime_spots, aes(x = `Type of Location`, y = `Number of Crime Occurences`)) + 
+  geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  ggtitle("Most Common Locations Crimes Occur In")
 
 ```
 
-Graphs most common types of crime
+Most common types of crime
 ```{r}
 
 crime_types = count(crime_data, Primary.Type)
@@ -66,7 +60,7 @@ ggplot(data = crime_data, aes(x = crime_data$Primary.Type))  +
 
 ```
 
-Grpahs fluctuations in overall crime rate during 2017
+Fluctuations in overall crime rate and arrest rate during 2017
 ```{r}
 crime_data$Date = as.character(crime_data$Date)
 
@@ -92,8 +86,6 @@ ggplot(crime_dates, aes(x = Date)) +
 ```
 
 Changes in crime rate by month for 5 most frequent types of crime
-
-
 ```{r}
 most_frequent_crime_types = tail(arrange(crime_types, n), 5)
 most_frequent_crime_types
@@ -113,17 +105,6 @@ battery_rate$Date = as.Date.character(battery_rate$Date, format = "%m/%d/%y")
 theft_rate = count(subset(crime_data, crime_data$Primary.Type == "THEFT"), Date)
 theft_rate$Date = as.Date.character(theft_rate$Date, format = "%m/%d/%y")
 
-# ggplot(crime_dates, aes(x = Date)) + 
-#   geom_line(data = assault_rate, aes(y = n, color = "Assault")) +
-#   geom_line(data = deceptive_pratice_rate, aes(y = n, color = "Deceptive Practice")) + 
-#   geom_line(data = criminal_damage_rate, aes(y = n, color = "Criminal Damage")) +
-#   geom_line(data = battery_rate, aes(y = n, color = "Battery")) + 
-#   geom_line(data = theft_rate, aes(y = n, color = "Theft")) + 
-#   scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
-#   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-#   ylim(0,25) + 
-#   labs(title = "Fluctuations in Different Crime Rates", y = "Number of Occurrences")
-  
 ggplot(crime_dates, aes(x = Date))  +
   geom_line(data = assault_rate, aes(y = n), colour = "red") +
   scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
@@ -159,6 +140,33 @@ ggplot(crime_dates, aes(x = Date))  +
 
 ```
 
+10 Most Dangerous Community Areas
+```{r}
+dangerous_community_areas = count(crime_data, crime_data$Community.Area)
+dangerous_community_areas = arrange(dangerous_community_areas, desc(n))
+dangerous_community_areas = head(dangerous_community_areas, 10)
+colnames(dangerous_community_areas) = c("Community Area", "Number of Crime Occurrences")
+dangerous_community_areas$`Community Area` = as.factor(dangerous_community_areas$`Community Area`)
+
+ggplot(dangerous_community_areas, aes(x = `Community Area`, y = `Number of Crime Occurrences`)) + 
+  geom_bar(stat = "identity")
+
+```
+
+10 most dangerous beats (smallest geographical area of police enforcement)
+```{r}
+most_dangerous_beats = count(crime_data, crime_data$Beat)
+colnames(most_dangerous_beats) = c("Beat", "Number of Crime Occurences")
+most_dangerous_beats = arrange(most_dangerous_beats, desc(`Number of Crime Occurences`))
+most_dangerous_beats = head(most_dangerous_beats, 10)
+most_dangerous_beats$Beat = as.factor(most_dangerous_beats$Beat)
+
+ggplot(most_dangerous_beats, aes(x = `Beat`, y = `Number of Crime Occurences`)) + 
+  geom_bar(stat = "identity") + 
+  ggtitle("Beats with Most Crime Occurences")
+```
+
+
 15 most dangerous streets with highest crime rates
 ```{r}
 
@@ -167,14 +175,13 @@ pattern = "[NWES].+"
 crime_data$Street = str_extract(crime_data$Block, pattern)
 dangerous_streets = count(crime_data, Street)
 dangerous_streets = arrange(dangerous_streets, desc(n))
+dangerous_streets = head(dangerous_streets, 15)
+colnames(dangerous_streets) = c("Street Name", "Number of Crime Occurences")
 
-#subset(crime_data, crime_data$Street %in% head(dangerous_streets$Street,5)) 
-
-ggplot(data = subset(crime_data, crime_data$Street %in% head(dangerous_streets$Street, 15)), aes(x = Street)) +
-  geom_bar() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  labs(title = "Most Dangerous Streets", x = "Street Name", y = "Number of Crime Incidents")
-  
+ggplot(dangerous_streets, aes(x = `Street Name`, y = `Number of Crime Occurences`)) +
+  geom_bar(stat = "identity") + 
+  ggtitle("Streets with Most Crime Occurences") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
 ```
 
