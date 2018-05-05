@@ -1,0 +1,185 @@
+---
+title: "Chicago Crime Data Visualizations"
+author: "Vetrie Senthilkumar"
+date: "April 26, 2018"
+output: html_document
+---
+
+Load Chicago Crime Data from 2017 into R and load libraries. Convert Date variable to Date type
+
+```{r, message=FALSE}
+crime_data = read.csv("Crimes_-_2001_to_present (1).csv")
+
+library(dplyr)
+library(ggplot2)
+library(stringr)
+```
+
+Quantitative EDA
+
+```{r}
+dim(crime_data)
+head(crime_data)
+summary(crime_data)
+str(crime_data)
+
+```
+
+Graphs crime occurences for each of Chicago's 20 Districts
+
+```{r}
+
+ggplot(data = crime_data, aes(x = crime_data$District)) + 
+  geom_bar() +
+  labs(title = "Crime Occurences Per District", x = "Chicago Districts", y = "Number of Crime Occurences") + 
+  scale_x_continuous(breaks = seq(min(crime_data$District), 25, by = 1)) 
+
+```
+
+Graphs 20 most common locations that crimes occur in
+
+```{r}
+crime_spots = count(crime_data, Location.Description)
+crime_spots = arrange(crime_spots, desc(n))
+crime_spots = head(crime_spots, 20)
+
+crime_data_locations = subset(crime_data, crime_data$Location.Description %in% crime_spots$Location.Description)
+
+ggplot(data = crime_data_locations, aes(x = crime_data_locations$Location.Description)) +
+  geom_bar() + 
+  labs(title = "Most Common Locations Crimes Occur In", x = "Types of Locations", y = "Number of Crime Occurrences") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+
+
+```
+
+Graphs most common types of crime
+```{r}
+
+crime_types = count(crime_data, Primary.Type)
+
+ggplot(data = crime_data, aes(x = crime_data$Primary.Type))  +
+  geom_bar() + 
+  labs(title = "Crime Rates for Different Types of Crimes", x = "Types of Crimes", y = "Number of Occurrences") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+Grpahs fluctuations in overall crime rate during 2017
+```{r}
+crime_data$Date = as.character(crime_data$Date)
+
+date_pattern = "[0-9]{1,2}/[0-9]{1,2}/[0-9]{2}"
+crime_data$Date = str_extract(crime_data$Date, date_pattern)
+
+crime_dates = count(crime_data, Date)
+crime_dates$Date = as.Date.character(crime_dates$Date, format = "%m/%d/%y")
+
+subset_arrests = subset(crime_data, Arrest == TRUE)
+arrest_dates = count(subset_arrests, subset_arrests$Date)
+colnames(arrest_dates) = c("Date", "n")
+arrest_dates$Date = as.Date.character(arrest_dates$Date, format = "%m/%d/%y")
+
+ggplot(crime_dates, aes(x = Date)) +
+  geom_line(aes(y = crime_dates$n, color = "Crime Rate")) +
+  geom_line(data = arrest_dates, aes(y = arrest_dates$n, color = "Arrest Rate")) +
+  labs(title = "Crime Rate vs Arrest Rate", y = "Number of Occurences") +
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  
+
+```
+
+Changes in crime rate by month for 5 most frequent types of crime
+
+
+```{r}
+most_frequent_crime_types = tail(arrange(crime_types, n), 5)
+most_frequent_crime_types
+
+assault_rate = count(subset(crime_data, crime_data$Primary.Type == "ASSAULT"), Date)
+assault_rate$Date = as.Date.character(assault_rate$Date, format = "%m/%d/%y")
+
+deceptive_pratice_rate = count(subset(crime_data, crime_data$Primary.Type == "DECEPTIVE PRACTICE"), Date)
+deceptive_pratice_rate$Date = as.Date.character(deceptive_pratice_rate$Date, format = "%m/%d/%y")
+
+criminal_damage_rate = count(subset(crime_data, crime_data$Primary.Type == "CRIMINAL DAMAGE"), Date)
+criminal_damage_rate$Date = as.Date.character(criminal_damage_rate$Date, format = "%m/%d/%y")
+
+battery_rate = count(subset(crime_data, crime_data$Primary.Type == "BATTERY"), Date)
+battery_rate$Date = as.Date.character(battery_rate$Date, format = "%m/%d/%y")
+
+theft_rate = count(subset(crime_data, crime_data$Primary.Type == "THEFT"), Date)
+theft_rate$Date = as.Date.character(theft_rate$Date, format = "%m/%d/%y")
+
+# ggplot(crime_dates, aes(x = Date)) + 
+#   geom_line(data = assault_rate, aes(y = n, color = "Assault")) +
+#   geom_line(data = deceptive_pratice_rate, aes(y = n, color = "Deceptive Practice")) + 
+#   geom_line(data = criminal_damage_rate, aes(y = n, color = "Criminal Damage")) +
+#   geom_line(data = battery_rate, aes(y = n, color = "Battery")) + 
+#   geom_line(data = theft_rate, aes(y = n, color = "Theft")) + 
+#   scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
+#   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+#   ylim(0,25) + 
+#   labs(title = "Fluctuations in Different Crime Rates", y = "Number of Occurrences")
+  
+ggplot(crime_dates, aes(x = Date))  +
+  geom_line(data = assault_rate, aes(y = n), colour = "red") +
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") +
+  labs(title = "Assaults Committed over Time", x = "Date", y = "Number of Assaults")
+
+ggplot(crime_dates, aes(x = Date, color = "blue"))  +
+  geom_line(data = deceptive_pratice_rate, aes(y = n), colour = "orange") +
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") + 
+  labs(title = "Deceptive Practice Activities over Time", x = "Date", y = "Number of Deceptive Practice Incidents")
+
+ggplot(crime_dates, aes(x = Date))  +
+  geom_line(data = criminal_damage_rate, aes(y = n), colour = "green") +
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") +
+  labs(title = "Criminal Damage Incidents over Time", x = "Date", y = "Number of Criminal Damage Incidents")
+
+ggplot(crime_dates, aes(x = Date))  +
+  geom_line(data = battery_rate, aes(y = n), colour = "blue") +
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") + 
+  labs(title = "Batteries Commited over Time", x = "Date", y = "Number of Batteries")
+
+ggplot(crime_dates, aes(x = Date))  +
+   geom_line(data = theft_rate, aes(y = n), color = "pink") +
+  scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+15 most dangerous streets with highest crime rates
+```{r}
+
+pattern = "[NWES].+"
+
+crime_data$Street = str_extract(crime_data$Block, pattern)
+dangerous_streets = count(crime_data, Street)
+dangerous_streets = arrange(dangerous_streets, desc(n))
+
+#subset(crime_data, crime_data$Street %in% head(dangerous_streets$Street,5)) 
+
+ggplot(data = subset(crime_data, crime_data$Street %in% head(dangerous_streets$Street, 15)), aes(x = Street)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Most Dangerous Streets", x = "Street Name", y = "Number of Crime Incidents")
+  
+
+```
+
+
+
+
+
+
