@@ -30,10 +30,8 @@ ui <- fluidPage(
    
    # Application title
    titlePanel("Chicago Crime Data Visualizations"),
-   
-   mainPanel(
-     htmlOutput("map")
-   ),
+  
+   leafletOutput("crime_map"),
    
    selectInput(inputId = "crime_type",
                label = "Select Type of Crime",
@@ -50,27 +48,18 @@ ui <- fluidPage(
                value = 3),
    
    plotlyOutput("district_crime_plot")
-   
-#    # Sidebar with a slider input for number of bins 
-#    sidebarLayout(
-#       sidebarPanel(
-#          sliderInput("bins",
-#                      "Number of bins:",
-#                      min = 1,
-#                      max = 50,
-#                      value = 30)
-#       ),
-#       
-#       # Show a plot of the generated distribution
-#       mainPanel(
-#          plotOutput("distPlot")
-#       )
-#    )
- )
+)
 
 server <- function(input, output) {
   
-  output$map = renderUI(includeHTML("fusion.html"))
+  output$crime_map = renderLeaflet(leaflet() %>%
+                                     addTiles() %>%
+                                     addCircleMarkers(lng = crime_dataset$Longitude, lat = crime_dataset$Latitude,
+                                                      popup = paste("Crime:", crime_dataset$Primary.Type, "<br>",
+                                                                    "Date:", as.character.Date(crime_dataset$Date,
+                                                                                               format = "%m/%d/%y"), "<br>",
+                                                                    "Arrest: ", crime_dataset$Arrest),
+                                                      radius = 1, fill = TRUE))
   
   crime_rate = reactive(count(subset(crime_dataset,
                                      crime_dataset$Primary.Type == input$crime_type), Date))
@@ -81,7 +70,9 @@ server <- function(input, output) {
                                                 scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
                                                 theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
                                                 theme(legend.position = "none") +
-                                                labs(title = "Overall Crime Rate", subtitle = as.character(input$crime_type),x = "Date", y = "Number of Assaults"), tooltip = "text")
+                                                labs(title = "Overall Crime Rate",
+                                                     subtitle = as.character(input$crime_type),x = "Date", y = "Number of Assaults"),
+                                                tooltip = "text")
   
                                          )
   
@@ -89,7 +80,8 @@ server <- function(input, output) {
   
   output$district_crime_plot = renderPlotly(ggplotly(ggplot(district_subset(), aes(x = Primary.Type)) + 
                                                        geom_bar() + 
-                                                       labs(title = "Crime Rates for Different Types of Crimes in District", x = "Types of Crimes", y = "Number of Occurrences") +
+                                                       labs(title = "Crime Rates for Different Types of Crimes in District",
+                                                            x = "Types of Crimes", y = "Number of Occurrences") +
                                                        theme(axis.text.x = element_text(angle = 90, hjust = 1))
                                                      )
                                             )
