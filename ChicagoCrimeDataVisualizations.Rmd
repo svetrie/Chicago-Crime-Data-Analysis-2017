@@ -5,14 +5,19 @@ date: "April 26, 2018"
 output: html_document
 ---
 
-Load Chicago Crime Data from 2017 into R and load libraries. Convert Date variable to Date type
 
+Citations:
+*Used following website to add color to bar graphs <http://www.sthda.com/english/wiki/ggplot2-barplots-quick-start-guide-r-software-and-data-visualization>
+*
+
+Load Chicago Crime Data from 2017 into R and load libraries
 ```{r, message=FALSE}
 crime_data = read.csv("Crimes_-_2001_to_present (1).csv")
 
 library(dplyr)
 library(ggplot2)
 library(stringr)
+
 ```
 
 Quantitative EDA
@@ -22,6 +27,8 @@ dim(crime_data)
 head(crime_data)
 summary(crime_data)
 str(crime_data)
+
+unique(crime_data$Primary.Type)
 
 ```
 
@@ -105,38 +112,39 @@ battery_rate$Date = as.Date.character(battery_rate$Date, format = "%m/%d/%y")
 theft_rate = count(subset(crime_data, crime_data$Primary.Type == "THEFT"), Date)
 theft_rate$Date = as.Date.character(theft_rate$Date, format = "%m/%d/%y")
 
-ggplot(crime_dates, aes(x = Date))  +
-  geom_line(data = assault_rate, aes(y = n), colour = "red") +
+ggplot(assault_rate, aes(x = assault_rate$Date, y = assault_rate$n)) +
+  geom_line(colour = "red") + 
   scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none") +
   labs(title = "Assaults Committed over Time", x = "Date", y = "Number of Assaults")
 
-ggplot(crime_dates, aes(x = Date, color = "blue"))  +
-  geom_line(data = deceptive_pratice_rate, aes(y = n), colour = "orange") +
+ggplot(deceptive_pratice_rate, aes(x = deceptive_pratice_rate$Date, y = deceptive_pratice_rate$n)) +
+  geom_line(colour = "green") +
   scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none") + 
   labs(title = "Deceptive Practice Activities over Time", x = "Date", y = "Number of Deceptive Practice Incidents")
 
-ggplot(crime_dates, aes(x = Date))  +
-  geom_line(data = criminal_damage_rate, aes(y = n), colour = "green") +
+ggplot(criminal_damage_rate, aes(x = Date, y = n)) + 
+  geom_line(colour = "blue") +
   scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none") +
   labs(title = "Criminal Damage Incidents over Time", x = "Date", y = "Number of Criminal Damage Incidents")
 
-ggplot(crime_dates, aes(x = Date))  +
-  geom_line(data = battery_rate, aes(y = n), colour = "blue") +
+ggplot(battery_rate, aes(x = Date, y = n)) +
+  geom_line(colour = "orange") +
   scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none") + 
-  labs(title = "Batteries Commited over Time", x = "Date", y = "Number of Batteries")
+  labs(title = "Batteries Committed over Time", x = "Date", y = "Number of Batteries")
 
-ggplot(crime_dates, aes(x = Date))  +
-   geom_line(data = theft_rate, aes(y = n), color = "pink") +
+ggplot(theft_rate, aes(x = Date, y = n)) +
+  geom_line(colour = "turquoise") +
   scale_x_date(date_breaks = "1 month", date_labels =  "%b %Y") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Thefts Committed over Time", x = "Date", y = "Number of Thefts")
 
 ```
 
@@ -148,7 +156,7 @@ dangerous_community_areas = head(dangerous_community_areas, 10)
 colnames(dangerous_community_areas) = c("Community Area", "Number of Crime Occurrences")
 dangerous_community_areas$`Community Area` = as.factor(dangerous_community_areas$`Community Area`)
 
-ggplot(dangerous_community_areas, aes(x = `Community Area`, y = `Number of Crime Occurrences`)) + 
+ggplot(dangerous_community_areas, aes(x = `Community Area`, y = `Number of Crime Occurrences`, fill = `Number of Crime Occurrences`)) + 
   geom_bar(stat = "identity")
 
 ```
@@ -179,9 +187,11 @@ dangerous_streets = head(dangerous_streets, 15)
 colnames(dangerous_streets) = c("Street Name", "Number of Crime Occurences")
 
 ggplot(dangerous_streets, aes(x = `Street Name`, y = `Number of Crime Occurences`)) +
-  geom_bar(stat = "identity") + 
+  geom_bar(stat = "identity", aes(fill = `Number of Crime Occurences`)) + 
   ggtitle("Streets with Most Crime Occurences") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  scale_fill_gradient(low = "#028900", high = "#adff00")
+  
 
 ```
 
