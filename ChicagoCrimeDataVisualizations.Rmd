@@ -149,7 +149,8 @@ dangerous_community_areas$`Community Area` = as.factor(dangerous_community_areas
 
 ggplot(dangerous_community_areas, aes(x = `Community Area`, y = `Number of Crime Occurrences`, fill = `Number of Crime Occurrences`)) + 
   geom_bar(stat = "identity") + 
-  scale_fill_gradient(low = "#ffe905", high = "#f51f00")
+  scale_fill_gradient(low = "#ffe905", high = "#f51f00") +
+  ggtitle("Community Areas with Most Crime Occurences")
 
 ```
 
@@ -183,12 +184,41 @@ ggplot(dangerous_streets, aes(x = `Street Name`, y = `Number of Crime Occurences
   geom_bar(stat = "identity", aes(fill = `Number of Crime Occurences`)) + 
   ggtitle("Streets with Most Crime Occurences") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  scale_fill_gradient(low = "#028900", high = "#adff00")
+  scale_fill_gradient(low = "#ffe905", high = "#f51f00")
   
 
 ```
 
+Linear Relationship Plot between Number of Crimes and Number of Arrests 
+```{r}
+library("lubridate")
 
+
+crime_dates = count(crime_data, Date)
+
+subset_arrests = subset(crime_data, Arrest == TRUE)
+arrest_dates = count(subset_arrests, subset_arrests$Date)
+colnames(arrest_dates) = c("Date", "n")
+
+crime_total <- vector()
+for (i in 1:12){
+  crime_total[i] <-sum(month(as.POSIXlt(crime_dates$Date, format = "%y-%m-%d")) == i)
+
+}
+
+arrest_total <- vector()
+for (i in 1:12){
+  arrest_total[i] <-sum(month(as.POSIXlt(arrest_dates$Date, format = "%y-%m-%d")) == i)
+
+}
+
+fit = lm(arrest_total ~ crime_total)
+summary(fit)
+anova(fit)
+plot(fit)
+
+
+```
 
 
 
